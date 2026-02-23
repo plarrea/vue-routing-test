@@ -1,0 +1,67 @@
+import { createRouter, createWebHistory } from "vue-router";
+
+import TeamsList from "./pages/TeamsList.vue";
+import UsersList from "./pages/UsersList.vue";
+import TeamMembers from "./components/teams/TeamMembers.vue";
+import NotFound from "./pages/NotFound.vue";
+import TeamsFooter from "./components/teams/TeamsFooter.vue";
+import UsersFooter from "./components/users/UsersFooter.vue";
+
+const router = createRouter({
+  history: createWebHistory(),
+  routes: [
+    { path: "/", redirect: "/teams" },
+    {
+      // alias: "/",
+      name: "teams",
+      path: "/teams",
+      meta: { needsAuth: true },
+      components: { default: TeamsList, footer: TeamsFooter },
+      children: [
+        {
+          name: "team-members",
+          path: "/teams/:teamId",
+          component: TeamMembers,
+          props: true,
+        },
+      ],
+    },
+    // { name: "team-members", path: "/teams/:teamId", component: TeamMembers, props: true },
+    {
+      path: "/users",
+      components: { default: UsersList, footer: UsersFooter },
+      beforeEnter(to, from, next) {
+        console.log("users before enter");
+        console.log(to, from);
+        next();
+      },
+    },
+    { path: "/:notFound(.*)", component: NotFound },
+  ],
+  scrollBehavior(to, from, savedPosition) {
+    console.log("scroll behaviour");
+    console.log(to, from, savedPosition);
+    if (savedPosition) return savedPosition;
+    return { left: 0, top: 0 };
+  },
+  // linkActiveClass: 'active'
+});
+
+router.beforeEach((to, from, next) => {
+  console.log("Global before each nav");
+  console.log(to, from);
+
+  if (to.meta.needsAuth) {
+    console.log("Needs Auth");
+  }
+  // next(false); // to cancel nav
+  // next({ name: 'team-members', params: { teamId: 't2' } }); // to redirect
+  next();
+});
+
+router.afterEach((to, from) => {
+  console.log("Global after each nav");
+  console.log(to, from);
+});
+
+export default router;
