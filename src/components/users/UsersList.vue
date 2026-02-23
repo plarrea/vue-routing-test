@@ -1,17 +1,34 @@
 <template>
   <ul>
-    <user-item v-for="user in users" :key="user.id" :name="user.fullName" :role="user.role"></user-item>
+    <user-item
+      v-for="user in users"
+      :key="user.id"
+      :name="user.fullName"
+      :role="user.role"
+    ></user-item>
   </ul>
 </template>
 
 <script>
-import UserItem from './UserItem.vue';
+import UserItem from "./UserItem.vue";
 
 export default {
   components: {
     UserItem,
   },
-  inject: ['users'],
+  inject: ["users"],
+  beforeRouteLeave(to, from, next) {
+    console.log("UsersList beforeRouteLeave");
+    console.log(to, from);
+    // here could check if maybe changes have been saved or show an alert to confirm first
+    const confirmed = confirm("Are you sure you want to leave?");
+    next(confirmed);
+  },
+  beforeRouteEnter(to, from, next) {
+    console.log("UsersList beforeRouteEnter");
+    console.log(to, from);
+    next();
+  },
 };
 </script>
 

@@ -52,6 +52,13 @@ export default {
       this.loadTeamMembers(newId);
     },
   },
+  beforeRouteUpdate(to, from, next) {
+    console.log("TeamMembers beforeRouteUpdate");
+    console.log(to, from);
+    // we could then use this instead of the watcher
+    // this.loadTeamMembers(to.params.teamId);
+    next();
+  },
 };
 </script>
 
