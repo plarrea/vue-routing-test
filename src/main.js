@@ -17,6 +17,7 @@ const router = createRouter({
       // alias: "/",
       name: "teams",
       path: "/teams",
+      meta: { needsAuth: true },
       components: { default: TeamsList, footer: TeamsFooter },
       children: [
         {
@@ -51,6 +52,10 @@ const router = createRouter({
 router.beforeEach((to, from, next) => {
   console.log("Global before each nav");
   console.log(to, from);
+
+  if (to.meta.needsAuth) {
+    console.log("Needs Auth");
+  }
   // next(false); // to cancel nav
   // next({ name: 'team-members', params: { teamId: 't2' } }); // to redirect
   next();
